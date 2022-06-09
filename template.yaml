@@ -1,0 +1,151 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+
+# The AWSTemplateFormatVersion identifies the capabilities of the template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  twilio-media-proxy
+
+# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform:
+- AWS::Serverless-2016-10-31
+
+Globals:
+  Api:
+    BinaryMediaTypes:
+    - image~1*
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'content-type'"
+      AllowOrigin: "'*'"
+
+# Resources declares the AWS resources that you want to include in the stack
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+          - "*"
+          AllowedMethods:
+          - GET
+          - PUT
+          AllowedOrigins:
+          - "*"
+  mediaProxyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/mediaProxy/mediaProxy.handler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: This function will validate the media request is coming from Twilio and Relay content from S3 to Twilio.
+      Policies:
+      - Statement:
+        - Sid: VisualEditor0
+          Effect: Allow
+          Action: logs:CreateLogGroup
+          Resource: arn:aws:logs:us-east-1:272304137107:*
+        - Sid: VisualEditor1
+          Effect: Allow
+          Action:
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: "*"
+        - Sid: AllowS3Permissions
+          Effect: Allow
+          Action:
+          - s3:PutObject
+          - s3:GetObject
+          Resource: !Sub "${MediaBucket.Arn}/*" 
+      Environment:
+        Variables:
+          TWILIO_AUTH_TOKEN: '{{resolve:ssm:TWILIO_AUTH_TOKEN}}'
+          S3_BUCKET: !Ref MediaBucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /media/{asset}
+            Method: GET
+  sendMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/sendMessage/sendMessage.handler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Lambda function for sending SMS/MMS messages via Twilio
+      Policies:
+      - Statement:
+        - Sid: VisualEditor0
+          Effect: Allow
+          Action: logs:CreateLogGroup
+          Resource: arn:aws:logs:us-east-1:272304137107:*
+        - Sid: VisualEditor1
+          Effect: Allow
+          Action:
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: "*"
+      Environment:
+        Variables: 
+          TWILIO_ACCOUNT_SID: '{{resolve:ssm:TWILIO_ACCOUNT_SID}}'
+          TWILIO_AUTH_TOKEN: '{{resolve:ssm:TWILIO_AUTH_TOKEN}}'
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /sendMessage
+            Method: POST   
+  presignedUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/preSignedUrl/preSignedUrl.handler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: This function will generate a signed url for uploading media to S3
+      Policies:
+      - Statement:
+        - Sid: VisualEditor0
+          Effect: Allow
+          Action: logs:CreateLogGroup
+          Resource: arn:aws:logs:us-east-1:272304137107:*
+        - Sid: VisualEditor1
+          Effect: Allow
+          Action:
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: "*"
+        - Sid: AllowS3Permissions
+          Effect: Allow
+          Action:
+          - s3:PutObject
+          - s3:GetObject
+          Resource: !Sub "${MediaBucket.Arn}/*" 
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref MediaBucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /presignedurl
+            Method: POST 
+
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

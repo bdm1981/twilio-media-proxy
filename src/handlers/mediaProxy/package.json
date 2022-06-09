@@ -1,0 +1,16 @@
+{
+  "name": "mediaproxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mediaProxy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1149.0",
+    "twilio": "^3.77.2"
+  }
+}
