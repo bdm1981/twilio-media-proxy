@@ -77,7 +77,7 @@ This will start an interactive command prompt session to set basic configuration
 ## 5. Deploy the sample frontend
 I have provided a simple UI for sending MMS messages. This is a React App that can be run locally or deployed to S3 as a static website or Twilio Serverless. I will be highlighting how to run this locally for demo purposes.
 
-1. From the `frontend` directory run the following command\
+1. From the `frontend` directory run the following command
    ```bash
    npm install
    ```
