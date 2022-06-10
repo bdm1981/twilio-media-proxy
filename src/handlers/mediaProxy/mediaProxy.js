@@ -4,12 +4,11 @@ const twilio = require("twilio");
 const s3 = new AWS.S3();
 
 exports.handler = async (event) => {
-  let response;
   console.log("event: ", JSON.stringify(event));
 
   const twilioSignature = event.headers["X-Twilio-Signature"];
   const params = event?.body ?? {};
-  const url = `https://${event.requestContext.domainName}${event.requestContext.path}`;
+  const url = `https://${event.requestContext.domainName}${event.requestContext.path}?delete=${event.queryStringParameters.delete}`;
 
   const requestIsValid = twilio.validateRequest(
     process.env.TWILIO_AUTH_TOKEN,
@@ -26,8 +25,12 @@ exports.handler = async (event) => {
       Key: event.pathParameters.asset,
     };
 
-    try{
+    try {
       const bucket = await s3.getObject(bucketParams).promise();
+      if (event.queryStringParameters.delete == "true") {
+        console.log("removing media");
+        await s3.deleteObject(bucketParams).promise();
+      }
 
       return {
         statusCode: 200,
@@ -40,12 +43,12 @@ exports.handler = async (event) => {
         },
         isBase64Encoded: true,
       };
-    }catch(err){
-      console.log("Error Fetching data: ", JSON.stringify(err))
+    } catch (err) {
+      console.log("Error Fetching data: ", JSON.stringify(err));
       return {
         statusCode: 500,
-        body: err.message
-      }
+        body: err.message,
+      };
     }
   } else {
     console.log("DENIED!");
@@ -54,5 +57,4 @@ exports.handler = async (event) => {
       body: "Invalid Signature, Access Denied",
     };
   }
-  
 };

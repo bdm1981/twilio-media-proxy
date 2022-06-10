@@ -16,7 +16,7 @@ exports.handler = async (event) => {
   };
 
   if (messageInput?.filename) {
-    messageParams.mediaUrl = `${messageInput.url}/${messageInput.filename}`;
+    messageParams.mediaUrl = `${messageInput.url}/${messageInput.filename}?delete=${messageInput.delete}`;
   }
 
   console.log(messageParams);
