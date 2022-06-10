@@ -3,3 +3,4 @@ env.json
 .aws-sam/
 samconfig.toml
 y
+.DS_Store
