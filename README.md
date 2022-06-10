@@ -1,6 +1,6 @@
 # twilio-media-proxy
 
-To send MMS messages with Twilio, the media must be hosted and publicly accisbled in order for Twilio API to copy the media. This project provides and example of securely hosting media in a private S3 bucket. A combination of API Gateway and Lambda functions are used to validate requests are from Twilio and serve the media if authorized. The media can also be deleted immediately after being accessed by Twilio.
+To send MMS messages with Twilio, the media must be publicly accessible in order for Twilio API to copy the media. This project provides and example of securely hosting media in a private S3 bucket. A combination of API Gateway and Lambda functions are used to validate requests are from Twilio and serve the media if authorized. The media can also be deleted immediately after being accessed by Twilio.
 
 ![Twilio Media Proxy Overview](/screenshots/Overview.png "Twilio Media Proxy Overview")
 
