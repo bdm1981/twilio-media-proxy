@@ -74,6 +74,31 @@ sam deploy --guided
 ```
 This will start an interactive command prompt session to set basic configurations and then deploy all of your resources via a stack in CloudFormation. Here are the answers to enter after running that command (except, substitute your AWS Region of choice – be sure to use the same region as step 2 above!):
 
+```
+Configuring SAM deploy
+======================
+
+        Looking for config file [samconfig.toml] :  Found
+        Reading default arguments  :  Success
+
+        Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [twilio-media-proxy-1]: 
+        AWS Region [us-east-1]: 
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [y/N]: 
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: 
+        #Preserves the state of previously provisioned resources when an operation fails
+        Disable rollback [y/N]: 
+        mediaProxyFunction may not have authorization defined, Is this okay? [y/N]: y
+        sendMessageFunction may not have authorization defined, Is this okay? [y/N]: y
+        presignedUrlFunction may not have authorization defined, Is this okay? [y/N]: y
+        Save arguments to configuration file [Y/n]: 
+        SAM configuration file [samconfig.toml]: 
+        SAM configuration environment [default]: 
+```
+
 ## 5. Deploy the sample frontend
 I have provided a simple UI for sending MMS messages. This is a React App that can be run locally or deployed to S3 as a static website or Twilio Serverless. I will be highlighting how to run this locally for demo purposes.
 
