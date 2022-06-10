@@ -63,6 +63,7 @@ Resources:
           Action:
           - s3:PutObject
           - s3:GetObject
+          - s3:DeleteObject
           Resource: !Sub "${MediaBucket.Arn}/*" 
       Environment:
         Variables:
