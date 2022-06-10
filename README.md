@@ -56,7 +56,7 @@ Download the code from this [repo](https://github.com/bdm1981/twilio-media-proxy
 ## 4. Deploy Code
 Using AWS SAM makes deploying serverless applications really easy. First, run:
 
-```shell
+```bash
 sam build
 ``` 
 This command goes through the yaml file template.yaml and builds all of the functions and layers, preparing the stack to be deployed.
@@ -66,6 +66,7 @@ Take a moment and go through the commented template.yaml file to review the reso
 In order to deploy the SAM application, you need to be sure that you have the proper AWS credentials configured. Having the AWS CLI also installed makes it easier, but here are some instructions.
 
 Once you have authenticated into your AWS account, you can run:
-
-$ sam deploy --guided
+```bash
+sam deploy --guided
+```
 This will start an interactive command prompt session to set basic configurations and then deploy all of your resources via a stack in CloudFormation. Here are the answers to enter after running that command (except, substitute your AWS Region of choice – be sure to use the same region as step 2 above!):
