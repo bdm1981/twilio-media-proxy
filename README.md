@@ -18,7 +18,7 @@ S3 => Persistence layer used to store configuration and data (could be something
 This is not a beginner level build! You need to have some knowledge of AWS, serverless computing, and programming.
 
 * Twilio Account. If you don’t yet have one, you can sign up for a free account [here](https://twilio.com/signup).
-* AWS Account with permissions to provision Lambdas, a S3 bucket, IAM Roles & Policies, an *API Gateway, and a custom EventBus. You can sign up for an account here.
+* AWS Account with permissions to provision Lambdas, an S3 bucket, IAM Roles & Policies, and API GatewayYou can sign up for an account [here](https://aws.amazon.com/resources/create-account/).
 * [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) CLI installed
 
 
